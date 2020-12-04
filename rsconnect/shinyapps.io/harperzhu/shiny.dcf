@@ -1,0 +1,12 @@
+name: shiny
+title: shiny
+username:
+account: harperzhu
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3351028
+bundleId: 3942160
+url: https://harperzhu.shinyapps.io/shiny/
+when: 1607069337.36405
+asMultiple: FALSE
+asStatic: FALSE
