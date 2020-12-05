@@ -1,17 +1,40 @@
 # Define server function
 server <- function(input, output) {
         source("Final_Project.R")
-        output$network <- renderPlot({
+        output$hist <- renderPlot({
+                #distribution_graph <- initiateNet(n.roommates, n.workers, n.people)
                 distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
                 plot(distribution_graph)
         })
-        output$simulation <- renderPlot({
-                infection_graph <- simulateDisease(input$distribution_graph, input$pct.starting.infected, input$max.time, input$infected, input$pparty, input$pmask, input$partyDay)
-                ggplot(infection_graph)
-        })
-        output$networkDay <- renderPlot({
-                networkDay_graph <- plotNetworkGraphDisease(input$results, input$timeToPlot, input$distribution_graph)
-                ggplot(networkDay_graph)
-        })
-        
+
+         output$simulation <- renderPlot({
+                 #fullResults <- simulateDisease(distribution_graph, pct.starting.infected, max.time, pparty, pmask, partyDay)
+                 fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, input$partyDay)
+                 infections.by.time = fullResults[[1]]
+                 results = fullResults[[2]]
+                 #print(class(infections.by.time))
+                 ggplot(data = infections.by.time, aes(x = t, y = S, col="S")) + geom_line() +
+                        geom_line(aes(x = t, y = S, col="E")) +
+                        geom_line(aes(x = t, y = I, col="I")) +
+                       geom_line(aes(x = t, y = R, col="R"))
+         })
+         output$networkDay <- renderPlot({
+                 ### To do: simulateDisease probably needs to return both infections.by.time AND results in order for this to work
+                 #net.layout.by.time <- plotNetworkGraphDisease(results, timeToPlot, distribution_graph)
+                 net.layout.by.time <- plotNetworkGraphDisease(results, input$timeToPlot, distribution_graph)
+                 net.layout.by.time %>%
+                         filter(t == timeToPlot) %>%
+                         ggplot(aes(
+                                 xend = xend,
+                                 yend = yend,
+                                 x = x,
+                                 y = y
+                         )) +
+                         geom_edges(color = "lightgray") +
+                         geom_nodes(aes(color = anything)) +
+                         facet_wrap(~ t) +
+                         theme_blank()
+         })
+         
 }
+        

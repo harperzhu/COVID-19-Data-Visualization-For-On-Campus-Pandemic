@@ -30,17 +30,16 @@ page_one <-
           max = 10,
           value = 5
         ),
-        plotOutput("hist")
       ),
       # mainPanel
       mainPanel(
         h1("Network Simulation"),
         h4("How connected are we?"),
         verbatimTextOutput("txtout"),
+        plotOutput("hist")
       )
     )
-  ) 
-
+  )
 
 #Page two: Disease Simulation
 page_two <- tabPanel(
@@ -58,58 +57,61 @@ page_two <- tabPanel(
       sliderInput(
         "pct.starting.infected",
         "The percentage of people initially infected",
-        min = 1,
-        max = 10,
-        value = 5
+        min = 0,
+        max = 1,
+        value = 0.5
       ),
       sliderInput(
         "pmask",
         "percentage of people wearing a mask",
-        min = 1,
-        max = 10,
-        value = 5
+        min = 0,
+        max = 1,
+        value = 0.5
       ),
       sliderInput(
         "pparty",
         "percentage of people going to party",
-        min = 1,
-        max = 10,
-        value = 5
+        min = 0,
+        max = 1,
+        value = 0.5
       ),
       sliderInput(
         "partyDay",
         "which day people go to a party",
-        min = 1,
-        max = 60,
-        value = 5
+        min = 0,
+        max = 1,
+        value = 0.5
       ),
-      plotOutput(
-        outputId = "simulation"
-      )
     ),
     #mainPanel
     mainPanel(
-      h1("Header 1"),
-      
-      h4("Output 1"),
-      verbatimTextOutput("txtout")
+      h1("Infection over time"),
+      verbatimTextOutput("txtout"),
+      plotOutput(outputId = "simulation")
   )
   )
 )
 
+
 #Page three: Simulation Network by days
 page_three <- tabPanel(
   "Simulation Network by days",
-  sidebarPanel(
-    width = 3,
     sidebarLayout(
+      sidebarPanel(
+        width = 3,
       sliderInput(
         "timeToPlot",
         "Which day during the simulation",
         min = 1,
         max = 16,
         value = 8
-      ),
+      )),
+      mainPanel(
+        h1("How will infections look like in the network Graph?"),
+        verbatimTextOutput("txtout"),
+        helpText("if you can't see any graph, make sure your parameter is in the right range!"),
+        plotOutput("networkDay")
+      )
       #selectInput(
         #inputId = "party_no_party",
         #label = h5("Party or no party?"),
@@ -118,23 +120,14 @@ page_three <- tabPanel(
         #  "no Party",
         #),
         #selected = "no Party"
-      #),
-      plotOutput("networkDay")
+      #)
     )
-  ),
-  # sidebarPanel
-  mainPanel(
-    h1("Header 1"),
+)
 
-    h4("Output 1"),
-    verbatimTextOutput("txtout"),
-    helpText("if you can't see any graph, make sure your parameter is in the right range!")
-  )
-) 
-#Page four: Acknowledgement
+#Page four: Acknowledgment
 
 page_four <- tabPanel("Acknowledgement", "I am deeply grateful to DRP for giving me this wonderful opportunity to study more about Network modeling and the SIR model in disease simulation.
-Special thanks goes to my mentor Anna, who has been patient, compassionate and helpful in mentoring me.  I would never be able to make as much progress as I have without her. 
+Special thanks goes to my mentor Anna, who has been patient, compassionate and helpful.  I would never be able to make as much progress as I have without her.
 ")
 
 #Define UI
@@ -144,8 +137,8 @@ ui <- fluidPage(
     theme = shinytheme("flatly"),
     "Can't I just go to one party?",
     page_one,
-    page_two,
-    page_three,
-    page_four
+     page_two,
+     page_three,
+     page_four
   )
 )

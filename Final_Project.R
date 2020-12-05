@@ -17,11 +17,12 @@ pct.starting.infected <- 0.05
 n.workers <- 10
 n.roommates <- 3
 n.people <- 200
-pct.starting.infected <- 0.01
-max.time <- 365
+pct.starting.infected <- 0.5
+max.time <- 100
 pparty <- 0.8
 pmask <- 0.1
-partyDay <- 8
+partyDay <- 4
+timeToPlot <- 10
 #pct.starting.infected, max.time, infected, pparty, pmask, partyDay
 
 initiateNet <- function(n.roommates, n.workers, n.people) {
@@ -66,15 +67,8 @@ initiateNet <- function(n.roommates, n.workers, n.people) {
         ### Workers have 3, nonworkers have 1
         distribution_graph <-
                 graph_from_adjacency_matrix(distribution, "undirected")
-        
         return(distribution_graph)
 }
-
-
-
-
-initiateNet(n.roommates=2, n.workers=2, n.people=100)
-distribution_graph
 
 
 
@@ -89,10 +83,11 @@ simulateDisease <-
         function(distribution_graph,
                  pct.starting.infected,
                  max.time,
-                 infected,
                  pparty,
                  pmask,
                  partyDay) {
+                
+                
                 infected <- sample(
                         x = c(1, 0),
                         # people can be infected (T) or susceptible (F)
@@ -108,12 +103,11 @@ simulateDisease <-
                 
                 # Set up a list that tracks infections over time.
                 # At time step 1, the infections are just the inital infections.
-                max.time <- 365
                 infections <- vector(length = max.time, mode = "list")
                 infections[[1]] <- infected
                 
                 # Get the edgelist and add a column that stores whether or not people are roommates
-                el <- as_edgelist(distribution_graph) %>%
+                el <-   as_edgelist(distribution_graph) %>%
                         as.data.frame %>%
                         set_names(value = c("from", "to"))
                 for (i in 1:n.roommates) {
@@ -121,19 +115,15 @@ simulateDisease <-
                 }
                 
                 # Next, run the loop
-                set.seed(1)
                 for (t in 2:max.time) {
                         ### Every day something happens!!!!!
-                        
-                        
                         ### First, anyone who has ever been in contact with disease (anyone for who infections[[t]] !=0)
                         ### has their status incremented by a day.
                         ### NOTE: days 1-5 are latent
                         ### days 6-11 are infectious
                         ### days 12+ are recovered
                         infections[[t]] <- infections[[t - 1]]
-                        infections[[t]][infections[[t]] != 0] <-
-                                infections[[t]][infections[[t]] != 0] + 1
+                        infections[[t]][infections[[t]] != 0] <-  infections[[t]][infections[[t]] != 0] + 1 
                         
                         ### For every edge in EL, find out if it is at risk of spreading the disease
                         # This will store edges where the "from" person is susceptible
@@ -142,18 +132,14 @@ simulateDisease <-
                         at_risk_edges_2 <- rep(FALSE, nrow(el))
                         
                         for (i in 1:nrow(el)) {
-                                person1 <- el[i, 1]
-                                person2 <- el[i, 2]
+                                person1 <- el[i,1]
+                                person2 <- el[i,2]
                                 ### If person 1 is S and person 2 is Infectious
-                                if (infections[[t]][person1] == 0 &
-                                    (infections[[t]][person2] > 5) &
-                                    (infections[[t]][person2] <= 11)) {
+                                if (infections[[t]][person1] == 0 & (infections[[t]][person2] > 5) & (infections[[t]][person2] <= 11)) {
                                         at_risk_edges_1[i] <- TRUE
                                 }
                                 ### If person 2 is S and person 1 is Infectious
-                                if (infections[[t]][person2] == 0 &
-                                    (infections[[t]][person1] > 5) &
-                                    (infections[[t]][person1] <= 11)) {
+                                if (infections[[t]][person2] == 0 & (infections[[t]][person1] > 5) & (infections[[t]][person1] <= 11)) {
                                         at_risk_edges_2[i] <- TRUE
                                 }
                         }
@@ -163,89 +149,56 @@ simulateDisease <-
                         ### If the people are NOT roommates,spreads with probability 3/7*0.015
                         ### The 3/7 is because there is only a 3/7 probability that you went to work today
                         
-                        infections_roommate <-
-                                sample(
-                                        c(TRUE, FALSE),
-                                        size = nrow(el),
-                                        prob = c(0.7, 0.3),
-                                        replace = TRUE
-                                )
-                        infections_coworkers <-
-                                sample(
-                                        c(TRUE, FALSE),
-                                        size = nrow(el),
-                                        prob = c(3 / 7 * 0.015, 1 - 3 / 7 * 0.015),
-                                        replace = TRUE
-                                )
+                        infections_roommate <- sample(c(TRUE, FALSE), size=nrow(el), prob=c(0.7, 0.3), replace=TRUE)
+                        infections_coworkers <- sample(c(TRUE, FALSE), size=nrow(el), prob=c(3/7*0.015, 1-3/7*0.015), replace=TRUE)
                         
-                        new_infected_roommates_1 <-
-                                at_risk_edges_1 &
-                                el$roommates & infections_roommate
-                        new_infected_roommates_2  <-
-                                at_risk_edges_2 &
-                                el$roommates & infections_roommate
-                        new_infected_coworkers_1 <-
-                                at_risk_edges_1 &
-                                !el$roommates & infections_coworkers
-                        new_infected_coworkers_2  <-
-                                at_risk_edges_2 &
-                                !el$roommates & infections_coworkers
+                        new_infected_roommates_1 <- at_risk_edges_1 &  el$roommates & infections_roommate
+                        new_infected_roommates_2  <- at_risk_edges_2 &  el$roommates & infections_roommate
+                        new_infected_coworkers_1 <- at_risk_edges_1 & !el$roommates & infections_coworkers
+                        new_infected_coworkers_2  <- at_risk_edges_2 & !el$roommates & infections_coworkers
                         
                         #### Need to actually make these new people infected!!!
-                        new_infections <-
-                                c(el[which(new_infected_roommates_1 == TRUE), 1],
-                                  el[which(new_infected_roommates_2 == TRUE), 2],
-                                  el[which(new_infected_coworkers_1 == TRUE), 1],
-                                  el[which(new_infected_coworkers_2 == TRUE), 2])
+                        new_infections <- c(el[which(new_infected_roommates_1==TRUE),1],
+                                            el[which(new_infected_roommates_2==TRUE),2],
+                                            el[which(new_infected_coworkers_1==TRUE),1],
+                                            el[which(new_infected_coworkers_2==TRUE),2])
                         
                         infections[[t]][new_infections] <- 1
-                        
                         #### IF today is the party day, we need to suddenly make a lot of people infected
                         if (t == partyDay) {
                                 infections[[t]] <-
                                         simulateParty(infections[[t]],
-                                                      pmask = 0.5,
-                                                      pparty = 0.1)
+                                                      pmask,
+                                                      pparty)
                         }
                 }
                 
-                (
-                        results <- infections %>%
+                (results <- infections %>%
                                 lapply(FUN = as.data.frame) %>%
                                 lapply(FUN = set_names, value = "infected") %>%
                                 bind_rows(.id = "t") %>%
                                 mutate(id = rep(1:n.people, times = max.time),
                                        t = as.integer(t)) %>%
-                                tibble::as_tibble()
-                )
-                
+                                tibble::as_tibble())
+
                 # This dataset is the raw results of our simulation, but it's usually easier to
                 # look at a summary.  Let's look at the number of people infected over time
                 infections.by.time <- results %>%
                         group_by(t) %>%
                         summarize(
-                                S = sum(infected == 0),
-                                E = sum(infected > 0 &
-                                                infected < 5),
-                                I = sum(infected >= 5 &
-                                                infected <= 11),
-                                R = sum(infected > 11),
-                        )
-                # mutate_each(funs(as.numeric), t, n.infections)
+                                S = sum(infected==0),
+                                E= sum(infected > 0 & infected < 6),
+                                I= sum(infected >= 6 & infected <= 11),
+                                R = sum(infected > 11))
                 
-                #Plot SEIR Curves over time!!
-                #With this network structure and the low transmission rate between coworkers (because they wear masks)
-                #our transmission rates are quite low! So not much spreads.
+                #infection_graph <- ggplot(data = infections.by.time, aes(x = t, y = S, col="S")) + geom_line() +
+                 #       geom_line(aes(x = t, y = S, col="E")) +
+                 #       geom_line(aes(x = t, y = I, col="I")) +
+                  #      geom_line(aes(x = t, y = R, col="R"))
                 
-                #Fun idea for next week: what happens if we change various things about the network??
+               # return(c(results, infection_graph))
                 
-                infection_graph <-
-                        ggplot(data = infections.by.time, aes(x = t, y = S, col = "S")) + geom_line() +
-                        geom_line(aes(x = t, y = S, col = "E")) +
-                        geom_line(aes(x = t, y = I, col = "I")) +
-                        geom_line(aes(x = t, y = R, col = "R"))
-                
-                return(c(results, infection_graph))
+                return(list(infections.by.time, results))
         }
 
 
@@ -282,7 +235,7 @@ plotNetworkGraphDisease <-
                                by = "id") %>%
                         bind_rows
                 
-                networkDay_graph <- net.layout.by.time %>%
+                  net.layout.by.time %>%
                         filter(t == timeToPlot) %>%
                         ggplot(aes(
                                 xend = xend,
@@ -294,7 +247,7 @@ plotNetworkGraphDisease <-
                         geom_nodes(aes(color = anything)) +
                         facet_wrap(~ t) +
                         theme_blank()
-                return(networkDay_graph)
+                return(net.layout.by.time)
         }
 
 
@@ -331,16 +284,14 @@ simulateParty <- function(infected, pparty, pmask) {
         
         sus_partygoers <- partygoers[infected[partygoers] == 0]
         inf_partygoers <-
-                partygoers[infected[partygoers] >= 5 &
-                                   infected[partygoers] <= 11]
+                partygoers[infected[partygoers] <= 6 &
+                                   infected[partygoers] >0]
         
         print(infected[partygoers])
         
-        party_el <-
-                as.matrix(expand.grid(sus_partygoers, inf_partygoers))
-        
+        party_el <- as.matrix(expand.grid(sus_partygoers, inf_partygoers))
         if (!is.null(nrow(party_el))) {
-                for (i in 1:nrow(party_el)) {
+                for (i in 1:!is.null(nrow(party_el))) {
                         edge <- party_el[i, ]
                         
                         if (maskwearer[edge[1]] == TRUE &

@@ -1,0 +1,12 @@
+name: DiseaseSimulation
+title: DiseaseSimulation
+username:
+account: harperzhu
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3355519
+bundleId: 3946726
+url: https://harperzhu.shinyapps.io/DiseaseSimulation/
+when: 1607155708.78694
+asMultiple: FALSE
+asStatic: FALSE
