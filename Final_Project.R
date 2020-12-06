@@ -23,6 +23,7 @@ pparty <- 0.8
 pmask <- 0.1
 partyDay <- 4
 timeToPlot <- 10
+is_party <- FALSE
 #pct.starting.infected, max.time, infected, pparty, pmask, partyDay
 
 initiateNet <- function(n.roommates, n.workers, n.people) {
@@ -84,7 +85,7 @@ simulateDisease <-
                  pct.starting.infected,
                  max.time,
                  pparty,
-                 pmask,
+                 pmask,is_party,
                  partyDay) {
                 
                 
@@ -165,11 +166,13 @@ simulateDisease <-
                         
                         infections[[t]][new_infections] <- 1
                         #### IF today is the party day, we need to suddenly make a lot of people infected
-                        if (t == partyDay) {
-                                infections[[t]] <-
-                                        simulateParty(infections[[t]],
-                                                      pmask,
-                                                      pparty)
+                        if(is_party == "TRUE"){
+                                if (t == partyDay) {
+                                        infections[[t]] <-
+                                                simulateParty(infections[[t]],
+                                                              pmask,
+                                                              pparty)
+                                }  
                         }
                 }
                 
@@ -180,7 +183,7 @@ simulateDisease <-
                                 mutate(id = rep(1:n.people, times = max.time),
                                        t = as.integer(t)) %>%
                                 tibble::as_tibble())
-
+                
                 # This dataset is the raw results of our simulation, but it's usually easier to
                 # look at a summary.  Let's look at the number of people infected over time
                 infections.by.time <- results %>%
@@ -192,11 +195,11 @@ simulateDisease <-
                                 R = sum(infected > 11))
                 
                 #infection_graph <- ggplot(data = infections.by.time, aes(x = t, y = S, col="S")) + geom_line() +
-                 #       geom_line(aes(x = t, y = S, col="E")) +
-                 #       geom_line(aes(x = t, y = I, col="I")) +
-                  #      geom_line(aes(x = t, y = R, col="R"))
+                #       geom_line(aes(x = t, y = S, col="E")) +
+                #       geom_line(aes(x = t, y = I, col="I")) +
+                #      geom_line(aes(x = t, y = R, col="R"))
                 
-               # return(c(results, infection_graph))
+                # return(c(results, infection_graph))
                 
                 return(list(infections.by.time, results))
         }
@@ -225,7 +228,7 @@ plotNetworkGraphDisease <-
                         E = 0 < infected & infected < 5,
                         I = infected >= 5 & infected <= 11,
                         R = infected > 11,
-                        anything = infected > 0
+                        is_infected = infected > 0
                 )
                 
                 net.layout.by.time <-
@@ -235,18 +238,13 @@ plotNetworkGraphDisease <-
                                by = "id") %>%
                         bind_rows
                 
-                  net.layout.by.time %>%
-                        filter(t == timeToPlot) %>%
-                        ggplot(aes(
-                                xend = xend,
-                                yend = yend,
-                                x = x,
-                                y = y
-                        )) +
+                net.layout.by.time %>% 
+                        filter(t %in% c(5, 6, 7, 20, 40)) %>%
+                        ggplot(aes(xend = xend, yend = yend, x = x, y = y)) + 
                         geom_edges(color = "lightgray") +
-                        geom_nodes(aes(color = anything)) +
-                        facet_wrap(~ t) +
-                        theme_blank()
+                        geom_nodes(aes(color = is_infected)) + 
+                        facet_wrap(~ t) + 
+                        theme_blank()+scale_color_manual(values=c("deep sky blue","indianred1"))
                 return(net.layout.by.time)
         }
 
@@ -344,4 +342,3 @@ simulateParty <- function(infected, pparty, pmask) {
         }
         return(infected)
 }
-

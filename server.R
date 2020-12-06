@@ -9,7 +9,7 @@ server <- function(input, output) {
 
          output$simulation <- renderPlot({
                  #fullResults <- simulateDisease(distribution_graph, pct.starting.infected, max.time, pparty, pmask, partyDay)
-                 fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, input$partyDay)
+                 fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, is_party, input$partyDay)
                  infections.by.time = fullResults[[1]]
                  results = fullResults[[2]]
                  #print(class(infections.by.time))
@@ -21,19 +21,13 @@ server <- function(input, output) {
          output$networkDay <- renderPlot({
                  ### To do: simulateDisease probably needs to return both infections.by.time AND results in order for this to work
                  #net.layout.by.time <- plotNetworkGraphDisease(results, timeToPlot, distribution_graph)
-                 net.layout.by.time <- plotNetworkGraphDisease(results, input$timeToPlot, distribution_graph)
-                 net.layout.by.time %>%
-                         filter(t == timeToPlot) %>%
-                         ggplot(aes(
-                                 xend = xend,
-                                 yend = yend,
-                                 x = x,
-                                 y = y
-                         )) +
+                 net.layout.by.time %>% 
+                         filter(t %in% c(5, 6, 7, 20, 40)) %>%
+                         ggplot(aes(xend = xend, yend = yend, x = x, y = y)) + 
                          geom_edges(color = "lightgray") +
-                         geom_nodes(aes(color = anything)) +
-                         facet_wrap(~ t) +
-                         theme_blank()
+                         geom_nodes(aes(color = is_infected)) + 
+                         facet_wrap(~ t) + 
+                         theme_blank()+scale_color_manual(values=c("deep sky blue","indianred1"))
          })
          
 }
