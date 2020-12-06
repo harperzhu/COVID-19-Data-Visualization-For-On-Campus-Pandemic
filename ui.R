@@ -86,12 +86,11 @@ page_two <- tabPanel(
     #mainPanel
     mainPanel(
       h1("Infection over time"),
-      verbatimTextOutput("txtout"),
+      #verbatimTextOutput("txtout"),
       plotOutput(outputId = "simulation")
   )
   )
 )
-
 
 #Page three: Simulation Network by days
 page_three <- tabPanel(
@@ -108,8 +107,8 @@ page_three <- tabPanel(
       )),
       mainPanel(
         h1("How will infections look like in the network Graph?"),
-        verbatimTextOutput("txtout"),
-        helpText("if you can't see any graph, make sure your parameter is in the right range!"),
+        #verbatimTextOutput("txtout"),
+        #helpText("if you can't see any graph, make sure your parameter is in the right range!"),
         plotOutput("networkDay")
       )
       #selectInput(
@@ -125,20 +124,20 @@ page_three <- tabPanel(
 )
 
 #Page four: Acknowledgment
-
-page_four <- tabPanel("Acknowledgement", "I am deeply grateful to DRP for giving me this wonderful opportunity to study more about Network modeling and the SIR model in disease simulation.
-Special thanks goes to my mentor Anna, who has been patient, compassionate and helpful.  I would never be able to make as much progress as I have without her.
-")
-
-#Define UI
+ 
+ page_four <- tabPanel("Acknowledgement", "I am deeply grateful to DRP for giving me this wonderful opportunity to study more about Network modeling and the SIR model in disease simulation.
+ Special thanks goes to my mentor Anna, who has been patient, compassionate and helpful.  I would never be able to make as much progress as I have without her.
+ ")
+ 
+# #Define UI
 ui <- fluidPage(
   includeCSS("style.css"),
   navbarPage(
-    theme = shinytheme("flatly"),
+     theme = shinytheme("flatly"),
     "Can't I just go to one party?",
-    page_one,
-     page_two,
-     page_three,
-     page_four
+     page_one,
+    page_two,
+    page_three,
+    page_four
   )
 )
