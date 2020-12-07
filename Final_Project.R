@@ -13,18 +13,16 @@ library(dplyr)
 library(ggplot2)
 
 
-pct.starting.infected <- 0.05
-n.workers <- 10
-n.roommates <- 3
-n.people <- 200
-pct.starting.infected <- 0.5
-max.time <- 100
-pparty <- 0.8
-pmask <- 0.1
-partyDay <- 4
-timeToPlot <- 10
-is_party <- FALSE
-#pct.starting.infected, max.time, infected, pparty, pmask, partyDay
+#pct.starting.infected <- 0.05
+#n.workers <- 10
+#n.roommates <- 3
+#n.people <- 200
+#pct.starting.infected <- 0.5
+#max.time <- 100
+#pparty <- 0.8
+#pmask <- 0.1
+#partyDay <- 4
+#timeToPlot <- 10
 
 initiateNet <- function(n.roommates, n.workers, n.people) {
         distribution <- matrix(0, nrow = n.people, ncol = n.people)
@@ -86,7 +84,9 @@ simulateDisease <-
                  max.time,
                  pparty,
                  pmask,is_party,
-                 partyDay) {
+                 partyDay,
+                 n.people,
+                 n.roommates) {
                 
                 
                 infected <- sample(

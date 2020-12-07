@@ -1,18 +1,21 @@
 # Define server function
 server <- function(input, output) {
         source("Final_Project.R")
-        output$hist <- renderPlot({
-                #distribution_graph <- initiateNet(n.roommates, n.workers, n.people)
-                distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
-                plot(distribution_graph)
+
+          output$hist <- renderPlot({
+          distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
+          plot(distribution_graph)
         })
 
          output$simulation <- renderPlot({
-                 #fullResults <- simulateDisease(distribution_graph, pct.starting.infected, max.time, pparty, pmask, partyDay)
-                 fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, is_party, input$partyDay)
-                 infections.by.time = fullResults[[1]]
-                 results = fullResults
-                ggplot(data = infections.by.time, aes(x = t, y = S, col="S")) + geom_line() +
+            distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
+            is_party <- TRUE
+            fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, is_party=TRUE,
+                                           input$partyDay, input$n.people, input$n.roommates)
+            #plot(distribution_graph)
+            infections.by.time = fullResults[[1]]
+            results = fullResults[[2]]
+              ggplot(data = infections.by.time, aes(x = t, y = S, col="S")) + geom_line() +
                         geom_line(aes(x = t, y = S, col="E")) +
                         geom_line(aes(x = t, y = I, col="I")) +
                        geom_line(aes(x = t, y = R, col="R"))
@@ -20,8 +23,11 @@ server <- function(input, output) {
                  
          })
          output$networkDay <- renderPlot({
-           #plot(1:100, 1:100)
-                 ### To do: simulateDisease probably needs to return both infections.by.time AND results in order for this to work
+           distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
+           is_party <- TRUE
+           fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, is_party=TRUE,
+                                          input$partyDay, input$n.people, input$n.roommates)
+           results = fullResults[[2]]
                  net.layout.by.time <- plotNetworkGraphDisease(results, timeToPlot, distribution_graph)
                  net.layout.by.time %>% 
                          filter(t %in% c(5, 6, 7, 20, 40)) %>%
