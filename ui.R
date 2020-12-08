@@ -13,12 +13,12 @@ page_one <-
           "n.people",
           "Number of people who lived near campus:",
           min = 1,
-          max = 1000,
-          value = 500
+          max = 500,
+          value = 200
         ),
         sliderInput(
           "n.workers",
-          "Number of people have in-person jobs:",
+          "Number of coworkers that one person has:",
           min = 1,
           max = 10,
           value = 5
@@ -47,12 +47,21 @@ page_two <- tabPanel(
   sidebarLayout(
     sidebarPanel(
       width = 3,
+      selectInput(
+        inputId = "is_party",
+        label = h5("Is there a party?"),
+        choices = list(
+          "Yes",
+          "No"
+        ),
+        selected = "No"
+      ),
       sliderInput(
         "max.time",
         "The duration of estimation",
         min = 1,
-        max = 1000,
-        value = 500
+        max = 365,
+        value = 100
       ),
       sliderInput(
         "pct.starting.infected",
@@ -82,6 +91,7 @@ page_two <- tabPanel(
         max = 1,
         value = 0.5
       ),
+      
     ),
     #mainPanel
     mainPanel(
@@ -104,34 +114,45 @@ page_three <- tabPanel(
         min = 1,
         max = 16,
         value = 8
-      )),
+      ),
+      selectInput(
+        inputId = "is_party",
+        label = h5("Is there a party?"),
+        choices = list(
+          "Yes",
+          "No"
+        ),
+        selected = "No"
+      )
+      ),
       mainPanel(
         h1("How will infections look like in the network Graph?"),
         #verbatimTextOutput("txtout"),
         #helpText("if you can't see any graph, make sure your parameter is in the right range!"),
         plotOutput("networkDay")
       )
-      #selectInput(
-        #inputId = "party_no_party",
-        #label = h5("Party or no party?"),
-        #choices = list(
-        #  "Party",
-        #  "no Party",
-        #),
-        #selected = "no Party"
-      #)
     )
 )
 
 #Page four: Acknowledgment
  
- page_four <- tabPanel("Acknowledgement", "I am deeply grateful to DRP for giving me this wonderful opportunity to study more about Network modeling and the SIR model in disease simulation.
- Special thanks goes to my mentor Anna, who has been patient, compassionate and helpful.  I would never be able to make as much progress as I have without her.
- ")
+ page_four <- tabPanel(
+   "Acknowledgement",
+   sidebarLayout(
+     sidebarPanel(h6("© 2020 Harper Zhu, Anna Neufeld, Directed Reading Program in University of Washington")),
+     mainPanel(
+       h4("I am deeply grateful to DRP for giving me this wonderful opportunity to study more about Network modeling and the SIR model in disease simulation.
+          Special thanks goes to my mentor Anna, 
+          who has been patient, compassionate and helpful.
+          I would never be able to make as much progress as I have without her.
+          "),
+     )
+   )
+ )
  
 # #Define UI
 ui <- fluidPage(
-  includeCSS("style.css"),
+   includeCSS("style.css"),
   navbarPage(
      theme = shinytheme("flatly"),
     "Can't I just go to one party?",

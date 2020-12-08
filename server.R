@@ -10,7 +10,7 @@ server <- function(input, output) {
          output$simulation <- renderPlot({
             distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
             is_party <- TRUE
-            fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, is_party=TRUE,
+            fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, input$is_party,
                                            input$partyDay, input$n.people, input$n.roommates)
             #plot(distribution_graph)
             infections.by.time = fullResults[[1]]
@@ -39,4 +39,3 @@ server <- function(input, output) {
          })
          
 }
-        
