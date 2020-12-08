@@ -13,16 +13,16 @@ library(dplyr)
 library(ggplot2)
 
 
-#pct.starting.infected <- 0.05
-#n.workers <- 10
-#n.roommates <- 3
-#n.people <- 200
-#pct.starting.infected <- 0.5
-#max.time <- 100
-#pparty <- 0.8
-#pmask <- 0.1
-#partyDay <- 4
-#timeToPlot <- 10
+# pct.starting.infected <- 0.05
+# n.workers <- 10
+# n.roommates <- 3
+# n.people <- 200
+# pct.starting.infected <- 0.5
+# max.time <- 100
+# pparty <- 0.8
+# pmask <- 0.1
+# partyDay <- 4
+# timeToPlot <- 10
 
 initiateNet <- function(n.roommates, n.workers, n.people) {
         distribution <- matrix(0, nrow = n.people, ncol = n.people)
@@ -64,8 +64,21 @@ initiateNet <- function(n.roommates, n.workers, n.people) {
         
         ### Everone either has 3 edges or 1 edge
         ### Workers have 3, nonworkers have 1
-        distribution_graph <-
-                graph_from_adjacency_matrix(distribution, "undirected")
+        
+         distribution_graph <-
+                 graph_from_adjacency_matrix(distribution, "undirected")
+        
+         l <- layout.fruchterman.reingold(distribution_graph, niter=1000)
+         
+         plot(distribution_graph, layout=l, 
+              edge.arrow.size=0.5, 
+              vertex.label.cex=0.1, 
+              vertex.label.family="Helvetica",
+              vertex.label.font=0.5,
+              vertex.shape="circle", 
+              vertex.size=1, 
+              vertex.label.color="black", 
+              edge.width=1)      
         return(distribution_graph)
 }
 

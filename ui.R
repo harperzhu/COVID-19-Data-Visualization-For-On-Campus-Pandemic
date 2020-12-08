@@ -36,7 +36,7 @@ page_one <-
         h1("Network Simulation"),
         h4("How connected are we?"),
         verbatimTextOutput("txtout"),
-        plotOutput("hist")
+        plotOutput("hist", height=800, width = 800)
       )
     )
   )
@@ -97,7 +97,7 @@ page_two <- tabPanel(
     mainPanel(
       h1("Infection over time"),
       #verbatimTextOutput("txtout"),
-      plotOutput(outputId = "simulation")
+      plotOutput(outputId = "simulation",width = "100%", click = "plot_click")
   )
   )
 )
@@ -115,21 +115,21 @@ page_three <- tabPanel(
         max = 16,
         value = 8
       ),
-      selectInput(
-        inputId = "is_party",
-        label = h5("Is there a party?"),
-        choices = list(
-          "Yes",
-          "No"
-        ),
-        selected = "No"
-      )
+      # selectInput(
+      #   inputId = "is_party",
+      #   label = h5("Is there a party?"),
+      #   choices = list(
+      #     "Yes",
+      #     "No"
+      #   ),
+      #   selected = "No."
+      # )
       ),
       mainPanel(
         h1("How will infections look like in the network Graph?"),
         #verbatimTextOutput("txtout"),
         #helpText("if you can't see any graph, make sure your parameter is in the right range!"),
-        plotOutput("networkDay")
+        plotOutput("networkDay",height=800, width = 800)
       )
     )
 )

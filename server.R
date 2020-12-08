@@ -4,7 +4,18 @@ server <- function(input, output) {
 
           output$hist <- renderPlot({
           distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
-          plot(distribution_graph)
+          #plot(distribution_graph)
+          l <- layout.fruchterman.reingold(distribution_graph, niter=1000)
+          
+          plot(distribution_graph, layout=l, 
+               edge.arrow.size=0.5, 
+               vertex.label.cex=0.1, 
+               vertex.label.family="Helvetica",
+               vertex.label.font=0.5,
+               vertex.shape="circle", 
+               vertex.size=1, 
+               vertex.label.color="black", 
+               edge.width=1)      
         })
 
          output$simulation <- renderPlot({
@@ -24,7 +35,6 @@ server <- function(input, output) {
          })
          output$networkDay <- renderPlot({
            distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
-           is_party <- TRUE
            fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, is_party=TRUE,
                                           input$partyDay, input$n.people, input$n.roommates)
            results = fullResults[[2]]
