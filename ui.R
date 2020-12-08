@@ -18,14 +18,14 @@ page_one <-
         ),
         sliderInput(
           "n.workers",
-          "Number of coworkers that one person has:",
+          "Number of coworkers in a workplace:",
           min = 1,
           max = 10,
           value = 5
         ),
         sliderInput(
           "n.roommates",
-          "Number of rommates to live with:",
+          "Number of rommates in a dorm room:",
           min = 1,
           max = 10,
           value = 5
@@ -68,7 +68,7 @@ page_two <- tabPanel(
         "The percentage of people initially infected",
         min = 0,
         max = 1,
-        value = 0.5
+        value = 0.05
       ),
       sliderInput(
         "pmask",
@@ -97,7 +97,8 @@ page_two <- tabPanel(
     mainPanel(
       h1("Infection over time"),
       #verbatimTextOutput("txtout"),
-      plotOutput(outputId = "simulation",width = "100%", click = "plot_click")
+      plotOutput(outputId = "simulation",width = "100%")
+      #plotOutput(outputId = "simulation",width = "100%", click = "plot_click")
   )
   )
 )

@@ -23,6 +23,7 @@ library(ggplot2)
 # pmask <- 0.1
 # partyDay <- 4
 # timeToPlot <- 10
+# is_party <-TRUE
 
 initiateNet <- function(n.roommates, n.workers, n.people) {
         distribution <- matrix(0, nrow = n.people, ncol = n.people)
@@ -124,8 +125,11 @@ simulateDisease <-
                 el <-   as_edgelist(distribution_graph) %>%
                         as.data.frame %>%
                         set_names(value = c("from", "to"))
-                for (i in 1:n.roommates) {
-                        el <- el %>% mutate("roommates" = (to == from + n.roommates))
+                
+                el <- el %>% mutate(roommates = FALSE)
+                for (i in 1:(n.roommates-1)) {
+                     el <- el %>% mutate(roommates = ifelse(to == from +i, TRUE, roommates))  
+                
                 }
                 
                 # Next, run the loop
@@ -133,8 +137,8 @@ simulateDisease <-
                         ### Every day something happens!!!!!
                         ### First, anyone who has ever been in contact with disease (anyone for who infections[[t]] !=0)
                         ### has their status incremented by a day.
-                        ### NOTE: days 1-5 are latent
-                        ### days 6-11 are infectious
+                        ### NOTE: days 7-11 are latent
+                        ### days 1-6 are infectious
                         ### days 12+ are recovered
                         infections[[t]] <- infections[[t - 1]]
                         infections[[t]][infections[[t]] != 0] <-  infections[[t]][infections[[t]] != 0] + 1 
@@ -149,17 +153,17 @@ simulateDisease <-
                                 person1 <- el[i,1]
                                 person2 <- el[i,2]
                                 ### If person 1 is S and person 2 is Infectious
-                                if (infections[[t]][person1] == 0 & (infections[[t]][person2] > 5) & (infections[[t]][person2] <= 11)) {
+                                if (infections[[t]][person1] == 0 & (infections[[t]][person2] > 0) & (infections[[t]][person2] <= 6)) {
                                         at_risk_edges_1[i] <- TRUE
                                 }
                                 ### If person 2 is S and person 1 is Infectious
-                                if (infections[[t]][person2] == 0 & (infections[[t]][person1] > 5) & (infections[[t]][person1] <= 11)) {
+                                if (infections[[t]][person2] == 0 & (infections[[t]][person1] > 0) & (infections[[t]][person1] <= 6)) {
                                         at_risk_edges_2[i] <- TRUE
                                 }
                         }
                         
                         ### For each edge in at_risk_edges_1, did the disease spread???
-                        ### If the people are roomates, it spreads with probability 0.7
+                        ### If the people are roommates, it spreads with probability 0.7
                         ### If the people are NOT roommates,spreads with probability 3/7*0.015
                         ### The 3/7 is because there is only a 3/7 probability that you went to work today
                         

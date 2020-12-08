@@ -27,9 +27,10 @@ server <- function(input, output) {
             infections.by.time = fullResults[[1]]
             results = fullResults[[2]]
               ggplot(data = infections.by.time, aes(x = t, y = S, col="S")) + geom_line() +
-                        geom_line(aes(x = t, y = S, col="E")) +
+                        geom_line(aes(x = t, y = E, col="E")) +
                         geom_line(aes(x = t, y = I, col="I")) +
-                       geom_line(aes(x = t, y = R, col="R"))
+                       geom_line(aes(x = t, y = R, col="R")) +
+                      theme_bw()
                  
                  
          })
