@@ -13,6 +13,7 @@ library(dplyr)
 library(ggplot2)
 
 
+<<<<<<< HEAD
 # pct.starting.infected <- 0.05
 # n.workers <- 10
 # n.roommates <- 3
@@ -24,6 +25,18 @@ library(ggplot2)
 # partyDay <- 4
 # timeToPlot <- 10
 # is_party <-TRUE
+=======
+pct.starting.infected <- 0.05
+n.workers <- 10
+n.roommates <- 3
+n.people <- 200
+pct.starting.infected <- 0.5
+max.time <- 100
+pparty <- 0.8
+pmask <- 0.1
+partyDay <- 4
+timeToPlot <- 10
+>>>>>>> fa8340621b534367f723abdf66d92547b06a696c
 
 initiateNet <- function(n.roommates, n.workers, n.people) {
         distribution <- matrix(0, nrow = n.people, ncol = n.people)
@@ -71,15 +84,15 @@ initiateNet <- function(n.roommates, n.workers, n.people) {
         
          l <- layout.fruchterman.reingold(distribution_graph, niter=1000)
          
-         plot(distribution_graph, layout=l, 
-              edge.arrow.size=0.5, 
-              vertex.label.cex=0.1, 
-              vertex.label.family="Helvetica",
-              vertex.label.font=0.5,
-              vertex.shape="circle", 
-              vertex.size=1, 
-              vertex.label.color="black", 
-              edge.width=1)      
+         #plot(distribution_graph, layout=l, 
+         #     edge.arrow.size=0.5, 
+         #     vertex.label.cex=0.1, 
+         #     vertex.label.family="Helvetica",
+         #     vertex.label.font=0.5,
+         #     vertex.shape="circle", 
+         #     vertex.size=1, 
+         #     vertex.label.color="black", 
+         #     edge.width=1)      
         return(distribution_graph)
 }
 
