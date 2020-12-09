@@ -20,32 +20,31 @@ server <- function(input, output) {
                      edge.width=1)      
         })
         #infections over time graph
-        output$simulation <- renderPlot({
+        
+        model <- eventReactive(c(input$n.roommates,input$n.workers,input$n.people,
+                input$max.time,input$pparty,input$pct.starting.infected,
+                input$pmask, input$is_party,input$partyDay)
+        ,{
                 distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
                 fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, input$is_party,
-                                               input$partyDay, input$n.people, input$n.roommates)
+                                       input$partyDay, input$n.people, input$n.roommates)
                 #plot(distribution_graph)
                 infections.by.time = fullResults[[1]]
                 results = fullResults[[2]]
-                ggplot(data = infections.by.time, aes(x = t, y = S, col="S")) +
+                p1 <- ggplot(data = infections.by.time, aes(x = t, y = S, col="S")) +
                         ylab("number of people") +
                         geom_line() +
                         geom_line(aes(x = t, y = E, col="E")) +
                         geom_line(aes(x = t, y = I, col="I")) +
                         geom_line(aes(x = t, y = R, col="R")) +
                         theme_bw()
+                list(myplot=p1, mytable = infections.by.time)
         })
-        #infections over time table
-        #output$table <- DT::renderDT(infections.by.time, options = list(pageLength = 5))
-        output$table <- renderTable({
-                distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
-                fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, input$is_party,
-                                                       input$partyDay, input$n.people, input$n.roommates)
-                infections.by.time = fullResults[[1]]
-                results = fullResults[[2]]
-                DT::renderDT(infections.by.time, options = list(pageLength = 5))
-                })
-        #infections over time Network graph
+        
+        output$simulation <- renderPlot({model()$myplot})
+                
+        output$table <- DT::renderDT(model()$mytable, options = list(pageLength = 5))
+        
         output$networkDay <- renderPlot({
                 distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
                 fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, is_party=TRUE,

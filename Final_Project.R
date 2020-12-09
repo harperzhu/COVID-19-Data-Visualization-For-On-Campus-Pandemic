@@ -202,7 +202,7 @@ simulateDisease <-
                 
                 # This dataset is the raw results of our simulation, but it's usually easier to
                 # look at a summary.  Let's look at the number of people infected over time
-                infections.by.time <<- results %>%
+                infections.by.time <- results %>%
                         group_by(t) %>%
                         summarize(
                                 S = sum(infected==0),
