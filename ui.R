@@ -1,6 +1,7 @@
 library(shiny)
 library(shinythemes)
 library(shinydashboard)
+library(gridExtra)
 
 #Page one: Network Graph
 page_one <-
@@ -97,18 +98,19 @@ page_two <- tabPanel(
     mainPanel(
       h1("Infection over time"),
       #verbatimTextOutput("txtout"),
-      plotOutput(outputId = "simulation",width = "100%")
+      plotOutput(outputId = "simulation",width = "100%"),
+      DT::DTOutput("table")
       #plotOutput(outputId = "simulation",width = "100%", click = "plot_click")
-  )
+    )
   )
 )
 
 #Page three: Simulation Network by days
 page_three <- tabPanel(
   "Simulation Network by days",
-    sidebarLayout(
-      sidebarPanel(
-        width = 3,
+  sidebarLayout(
+    sidebarPanel(
+      width = 3,
       sliderInput(
         "timeToPlot",
         "Which day during the simulation",
@@ -125,39 +127,39 @@ page_three <- tabPanel(
       #   ),
       #   selected = "No."
       # )
-      ),
-      mainPanel(
-        h1("How will infections look like in the network Graph?"),
-        #verbatimTextOutput("txtout"),
-        #helpText("if you can't see any graph, make sure your parameter is in the right range!"),
-        plotOutput("networkDay",height=800, width = 800)
-      )
+    ),
+    mainPanel(
+      h1("How will infections look like in the network Graph?"),
+      #verbatimTextOutput("txtout"),
+      #helpText("if you can't see any graph, make sure your parameter is in the right range!"),
+      plotOutput("networkDay",height=800, width = 800)
     )
+  )
 )
 
 #Page four: Acknowledgment
- 
- page_four <- tabPanel(
-   "Acknowledgement",
-   sidebarLayout(
-     sidebarPanel(h6("© 2020 Harper Zhu, Anna Neufeld, Directed Reading Program in University of Washington")),
-     mainPanel(
-       h4("I am deeply grateful to DRP for giving me this wonderful opportunity to study more about Network modeling and the SIR model in disease simulation.
+
+page_four <- tabPanel(
+  "Acknowledgement",
+  sidebarLayout(
+    sidebarPanel(h6("© 2020 Harper Zhu, Anna Neufeld, Directed Reading Program in University of Washington")),
+    mainPanel(
+      h4("I am deeply grateful to DRP for giving me this wonderful opportunity to study more about Network modeling and the SIR model in disease simulation.
           Special thanks goes to my mentor Anna, 
           who has been patient, compassionate and helpful.
           I would never be able to make as much progress as I have without her.
           "),
-     )
-   )
- )
- 
+    )
+  )
+)
+
 # #Define UI
 ui <- fluidPage(
-   includeCSS("style.css"),
+  includeCSS("style.css"),
   navbarPage(
-     theme = shinytheme("flatly"),
+    theme = shinytheme("flatly"),
     "Can't I just go to one party?",
-     page_one,
+    page_one,
     page_two,
     page_three,
     page_four

@@ -4,6 +4,7 @@ library(plotly)
 library(dplyr)
 library(ggplot2)
 library(shinyWidgets)
+library(gridExtra)
 source("ui.R")
 source("server.R")
 

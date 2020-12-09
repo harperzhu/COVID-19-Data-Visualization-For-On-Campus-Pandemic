@@ -13,7 +13,6 @@ library(dplyr)
 library(ggplot2)
 
 
-<<<<<<< HEAD
 # pct.starting.infected <- 0.05
 # n.workers <- 10
 # n.roommates <- 3
@@ -25,18 +24,6 @@ library(ggplot2)
 # partyDay <- 4
 # timeToPlot <- 10
 # is_party <-TRUE
-=======
-pct.starting.infected <- 0.05
-n.workers <- 10
-n.roommates <- 3
-n.people <- 200
-pct.starting.infected <- 0.5
-max.time <- 100
-pparty <- 0.8
-pmask <- 0.1
-partyDay <- 4
-timeToPlot <- 10
->>>>>>> fa8340621b534367f723abdf66d92547b06a696c
 
 initiateNet <- function(n.roommates, n.workers, n.people) {
         distribution <- matrix(0, nrow = n.people, ncol = n.people)
@@ -79,20 +66,20 @@ initiateNet <- function(n.roommates, n.workers, n.people) {
         ### Everone either has 3 edges or 1 edge
         ### Workers have 3, nonworkers have 1
         
-         distribution_graph <-
-                 graph_from_adjacency_matrix(distribution, "undirected")
+        distribution_graph <-
+                graph_from_adjacency_matrix(distribution, "undirected")
         
-         l <- layout.fruchterman.reingold(distribution_graph, niter=1000)
-         
-         #plot(distribution_graph, layout=l, 
-         #     edge.arrow.size=0.5, 
-         #     vertex.label.cex=0.1, 
-         #     vertex.label.family="Helvetica",
-         #     vertex.label.font=0.5,
-         #     vertex.shape="circle", 
-         #     vertex.size=1, 
-         #     vertex.label.color="black", 
-         #     edge.width=1)      
+        l <- layout.fruchterman.reingold(distribution_graph, niter=1000)
+        
+        plot(distribution_graph, layout=l, 
+             edge.arrow.size=0.5, 
+             vertex.label.cex=0.1, 
+             vertex.label.family="Helvetica",
+             vertex.label.font=0.5,
+             vertex.shape="circle", 
+             vertex.size=1, 
+             vertex.label.color="black", 
+             edge.width=1)      
         return(distribution_graph)
 }
 
@@ -114,7 +101,6 @@ simulateDisease <-
                  partyDay,
                  n.people,
                  n.roommates) {
-                
                 
                 infected <- sample(
                         x = c(1, 0),
@@ -141,8 +127,8 @@ simulateDisease <-
                 
                 el <- el %>% mutate(roommates = FALSE)
                 for (i in 1:(n.roommates-1)) {
-                     el <- el %>% mutate(roommates = ifelse(to == from +i, TRUE, roommates))  
-                
+                        el <- el %>% mutate(roommates = ifelse(to == from +i, TRUE, roommates))  
+                        
                 }
                 
                 # Next, run the loop
@@ -216,7 +202,7 @@ simulateDisease <-
                 
                 # This dataset is the raw results of our simulation, but it's usually easier to
                 # look at a summary.  Let's look at the number of people infected over time
-                infections.by.time <- results %>%
+                infections.by.time <<- results %>%
                         group_by(t) %>%
                         summarize(
                                 S = sum(infected==0),
@@ -233,6 +219,7 @@ simulateDisease <-
                 
                 return(list(infections.by.time, results))
         }
+
 
 
 
