@@ -2,25 +2,25 @@
 
 server <- function(input, output) {
         source("Final_Project.R")
-        
+
         #Network graph
         output$hist <- renderPlot({
                 distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
                 #plot(distribution_graph)
                 l <- layout.fruchterman.reingold(distribution_graph, niter=1000)
-                
-                plot(distribution_graph, layout=l, 
-                     edge.arrow.size=0.5, 
-                     vertex.label.cex=0.1, 
+
+                plot(distribution_graph, layout=l,
+                     edge.arrow.size=0.5,
+                     vertex.label.cex=0.1,
                      vertex.label.family="Helvetica",
                      vertex.label.font=0.5,
-                     vertex.shape="circle", 
-                     vertex.size=1, 
-                     vertex.label.color="black", 
-                     edge.width=1)      
+                     vertex.shape="circle",
+                     vertex.size=1,
+                     vertex.label.color="black",
+                     edge.width=1)
         })
         #infections over time graph
-        
+
         model <- eventReactive(c(input$n.roommates,input$n.workers,input$n.people,
                 input$max.time,input$pparty,input$pct.starting.infected,
                 input$pmask, input$is_party,input$partyDay)
@@ -40,11 +40,12 @@ server <- function(input, output) {
                         theme_bw()
                 list(myplot=p1, mytable = infections.by.time)
         })
-        
+
         output$simulation <- renderPlot({model()$myplot})
-                
+
         output$table <- DT::renderDT(model()$mytable, options = list(pageLength = 5))
-        
+
+        #network by day graph
         output$networkDay <- renderPlot({
                 distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
                 fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, is_party=TRUE,
@@ -52,12 +53,13 @@ server <- function(input, output) {
                 results = fullResults[[2]]
                 net.layout.by.time <- plotNetworkGraphDisease(results, timeToPlot, distribution_graph)
                 net.layout.by.time %>% 
-                        filter(t %in% c(5, 6, 7, 20, 40)) %>%
+                        filter(t %in% c(1, input$partyDay-2, input$partyDay+2, input$partyDay+6, input$partyDay+10)) %>%
                         ggplot(aes(xend = xend, yend = yend, x = x, y = y)) + 
                         geom_edges(color = "lightgray") +
                         geom_nodes(aes(color = is_infected)) + 
                         facet_wrap(~ t) + 
                         theme_blank()+scale_color_manual(values=c("deep sky blue","indianred1"))
+                
         })
-        
+
 }

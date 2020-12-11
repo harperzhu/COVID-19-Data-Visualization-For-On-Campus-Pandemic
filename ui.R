@@ -87,10 +87,10 @@ page_two <- tabPanel(
       ),
       sliderInput(
         "partyDay",
-        "which day people go to a party",
-        min = 0,
-        max = 1,
-        value = 0.5
+        "which day is the Party day",
+        min = 2,
+        max = 365,
+        value = 10
       ),
       
     ),
@@ -110,14 +110,21 @@ page_three <- tabPanel(
   "Simulation Network by days",
   sidebarLayout(
     sidebarPanel(
-      width = 3,
-      sliderInput(
-        "timeToPlot",
-        "Which day during the simulation",
-        min = 1,
-        max = 16,
-        value = 8
-      ),
+      width = 3
+      # sliderInput(
+      #   "partyDay",
+      #   "which day is the Party day",
+      #   min = 2,
+      #   max = 365,
+      #   value = 10
+      # ),
+      # sliderInput(
+      #   "timeToPlot",
+      #   "Which day during the simulation",
+      #   min = 1,
+      #   max = 16,
+      #   value = 8
+      # ),
       # selectInput(
       #   inputId = "is_party",
       #   label = h5("Is there a party?"),
@@ -142,7 +149,7 @@ page_three <- tabPanel(
 page_four <- tabPanel(
   "Acknowledgement",
   sidebarLayout(
-    sidebarPanel(h6("© 2020 Harper Zhu, Anna Neufeld, Directed Reading Program in University of Washington")),
+    sidebarPanel(h6("© 2020 Harper Zhu, Anna Neufeld, Directed Reading Program in the Department of Statistics at University of Washington")),
     mainPanel(
       h4("I am deeply grateful to DRP for giving me this wonderful opportunity to study more about Network modeling and the SIR model in disease simulation.
           Special thanks goes to my mentor Anna, 

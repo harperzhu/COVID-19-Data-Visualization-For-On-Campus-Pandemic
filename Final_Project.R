@@ -11,8 +11,8 @@ library(tergm)
 library(network)
 library(dplyr)
 library(ggplot2)
-
-
+# 
+# 
 # pct.starting.infected <- 0.05
 # n.workers <- 10
 # n.roommates <- 3
@@ -242,8 +242,8 @@ plotNetworkGraphDisease <-
                 
                 results <- results %>% mutate(
                         S = infected == 0,
-                        E = 0 < infected & infected < 5,
-                        I = infected >= 5 & infected <= 11,
+                        E = 0 < infected & infected < 6,
+                        I = infected >= 6 & infected <= 11,
                         R = infected > 11,
                         is_infected = infected > 0
                 )
@@ -255,13 +255,13 @@ plotNetworkGraphDisease <-
                                by = "id") %>%
                         bind_rows
                 
-                net.layout.by.time %>% 
-                        filter(t %in% c(5, 6, 7, 20, 40)) %>%
-                        ggplot(aes(xend = xend, yend = yend, x = x, y = y)) + 
-                        geom_edges(color = "lightgray") +
-                        geom_nodes(aes(color = is_infected)) + 
-                        facet_wrap(~ t) + 
-                        theme_blank()+scale_color_manual(values=c("deep sky blue","indianred1"))
+                # net.layout.by.time %>% 
+                #         filter(t %in% c(5, 6, 7, 20, 40)) %>%
+                #         ggplot(aes(xend = xend, yend = yend, x = x, y = y)) + 
+                #         geom_edges(color = "lightgray") +
+                #         geom_nodes(aes(color = is_infected)) + 
+                #         facet_wrap(~ t) + 
+                #         theme_blank()+scale_color_manual(values=c("deep sky blue","indianred1"))
                 return(net.layout.by.time)
         }
 
@@ -306,9 +306,9 @@ simulateParty <- function(infected, pparty, pmask) {
         
         party_el <- as.matrix(expand.grid(sus_partygoers, inf_partygoers))
         if (!is.null(nrow(party_el))) {
-                for (i in 1:!is.null(nrow(party_el))) {
+                for (i in 1:nrow(party_el)) {
                         edge <- party_el[i, ]
-                        
+                        ##### Both wear mask
                         if (maskwearer[edge[1]] == TRUE &
                             maskwearer[edge[2]] == TRUE) {
                                 spread <- sample(
@@ -321,18 +321,21 @@ simulateParty <- function(infected, pparty, pmask) {
                                 }
                         }
                         
-                        ##### ADJUST THIS PROB
+                        ##### susceptible person wear a mask, infected do not
                         if (maskwearer[edge[1]] == TRUE &
                             maskwearer[edge[2]] == FALSE) {
                                 spread <- sample(
                                         c(TRUE, FALSE),
                                         size = 1,
-                                        prob = c(0.7, 1 - 0.7)
+                                        prob = c(0.21, 1 - 0.21)
                                 )
                                 if (spread) {
                                         infected[edge[1]] <- 1
                                 }
                         }
+                        
+                        ##### both infectious and susceptible do not wear a mask
+                        
                         if (maskwearer[edge[1]] == FALSE &
                             maskwearer[edge[2]] == FALSE) {
                                 spread <- sample(
@@ -344,6 +347,8 @@ simulateParty <- function(infected, pparty, pmask) {
                                         infected[edge[1]] <- 1
                                 }
                         }
+                        ##### infected person wear a mask, susceptible do not
+                        
                         if (maskwearer[edge[1]] == FALSE &
                             maskwearer[edge[2]] == TRUE) {
                                 spread <- sample(
