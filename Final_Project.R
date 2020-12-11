@@ -235,7 +235,7 @@ simulateDisease <-
 
 
 plotNetworkGraphDisease <-
-        function(results, timeToPlot, distribution_graph) {
+        function(results, distribution_graph) {
                 distgraph2 <- distribution_graph %>% intergraph::asNetwork(.)
                 net.layout <- ggnetwork(distgraph2) %>%
                         mutate(id = rep(vertex.names))
@@ -302,7 +302,7 @@ simulateParty <- function(infected, pparty, pmask) {
                 partygoers[infected[partygoers] <= 6 &
                                    infected[partygoers] >0]
         
-        print(infected[partygoers])
+        #print(infected[partygoers])
         
         party_el <- as.matrix(expand.grid(sus_partygoers, inf_partygoers))
         if (!is.null(nrow(party_el))) {
