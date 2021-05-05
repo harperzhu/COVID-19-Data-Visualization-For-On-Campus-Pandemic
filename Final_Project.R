@@ -276,7 +276,7 @@ plotNetworkGraphDisease <-
 
 
 simulateParty <- function(infected, pparty, pmask) {
-        set.seed(1) 
+        set.seed(518) 
         ### Might be interesting to study how a change in %s impacts the results
         n.people <- length(infected)
         
@@ -308,7 +308,8 @@ simulateParty <- function(infected, pparty, pmask) {
         #print(infected[partygoers])
         
         party_el <- as.matrix(expand.grid(sus_partygoers, inf_partygoers))
-        if (!is.null(nrow(party_el))) {
+        print(dim(party_el))
+        if (!is.null(nrow(party_el)) & nrow(party_el)>0) {
                 for (i in 1:nrow(party_el)) {
                         edge <- party_el[i, ]
                         ##### Both wear mask
