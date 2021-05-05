@@ -23,7 +23,7 @@ server <- function(input, output) {
 
         model <- eventReactive(c(input$n.roommates,input$n.workers,input$n.people,
                 input$max.time,input$pparty,input$pct.starting.infected,
-                input$pmask, input$is_party,input$partyDay)
+                input$pmask, input$partyDay)
         ,{
                 distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
                 fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, 
