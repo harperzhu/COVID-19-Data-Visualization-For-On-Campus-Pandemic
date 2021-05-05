@@ -48,15 +48,15 @@ page_two <- tabPanel(
   sidebarLayout(
     sidebarPanel(
       width = 3,
-      selectInput(
-        inputId = "is_party",
-        label = h5("Is there a party?"),
-        choices = list(
-          "Yes",
-          "No"
-        ),
-        selected = "No"
-      ),
+      #selectInput(
+      #  inputId = "is_party",
+      #  label = h5("Is there a party?"),
+      #  choices = list(
+      #    "Yes",
+      #    "No"
+       # ),
+      #  selected = "No"
+      #),
       sliderInput(
         "max.time",
         "The duration of estimation",
@@ -99,7 +99,9 @@ page_two <- tabPanel(
       h1("Infection over time"),
       #verbatimTextOutput("txtout"),
       plotOutput(outputId = "simulation",width = "100%"),
-      DT::DTOutput("table")
+      plotOutput(outputId = "simulationParty",width = "100%"),
+      
+      #DT::DTOutput("table")
       #plotOutput(outputId = "simulation",width = "100%", click = "plot_click")
     )
   )
