@@ -98,7 +98,8 @@ simulateDisease <-
                  pct.starting.infected,
                  max.time,
                  pparty,
-                 pmask,is_party,
+                 pmask,
+                 is_party,
                  partyDay,
                  n.people,
                  n.roommates) {
@@ -188,8 +189,8 @@ simulateDisease <-
                                 if (t == partyDay) {
                                         infections[[t]] <-
                                                 simulateParty(infections[[t]],
-                                                              pmask,
-                                                              pparty)
+                                                              pparty,
+                                                              pmask)
                                 }  
                         }
                 }
