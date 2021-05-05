@@ -5,8 +5,8 @@ account: harperzhu
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3355519
-bundleId: 3967387
+bundleId: 4556392
 url: https://harperzhu.shinyapps.io/DiseaseSimulation/
-when: 1607546230.28495
+when: 1620146886.72647
 asMultiple: FALSE
 asStatic: FALSE

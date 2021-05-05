@@ -24,8 +24,10 @@ library(ggplot2)
 # partyDay <- 4
 # timeToPlot <- 10
 # is_party <-TRUE
+# death_rate <- 8.29%
 
 initiateNet <- function(n.roommates, n.workers, n.people) {
+        set.seed(1) 
         distribution <- matrix(0, nrow = n.people, ncol = n.people)
         
         ### If 0.5*n.people is the number of people who work, and each person who works
@@ -37,8 +39,7 @@ initiateNet <- function(n.roommates, n.workers, n.people) {
         ### There is a 50% chance you are not a worker (workplace=0)
         ### There is a 50% chance that you ARE a worker, and if you are you have an equal chance of being assigned to
         ### any workplace
-        workplaces <-
-                sample(
+        workplaces <-        sample(
                         0:n.workplaces,
                         size = n.people,
                         prob = c(0.5, rep(1 / n.workplaces, n.workplaces)),
@@ -67,7 +68,7 @@ initiateNet <- function(n.roommates, n.workers, n.people) {
         ### Workers have 3, nonworkers have 1
         
         distribution_graph <-
-                graph_from_adjacency_matrix(distribution, "undirected")
+        graph_from_adjacency_matrix(distribution, "undirected")
         
         l <- layout.fruchterman.reingold(distribution_graph, niter=1000)
         
@@ -101,7 +102,8 @@ simulateDisease <-
                  partyDay,
                  n.people,
                  n.roommates) {
-                
+
+                set.seed(1) 
                 infected <- sample(
                         x = c(1, 0),
                         # people can be infected (T) or susceptible (F)
@@ -239,7 +241,6 @@ plotNetworkGraphDisease <-
                 distgraph2 <- distribution_graph %>% intergraph::asNetwork(.)
                 net.layout <- ggnetwork(distgraph2) %>%
                         mutate(id = rep(vertex.names))
-                
                 results <- results %>% mutate(
                         S = infected == 0,
                         E = 0 < infected & infected < 6,
@@ -247,7 +248,8 @@ plotNetworkGraphDisease <-
                         R = infected > 11,
                         is_infected = infected > 0
                 )
-                
+
+                set.seed(1) 
                 net.layout.by.time <-
                         split(results, f = results$t) %>%
                         lapply(FUN = right_join,
@@ -274,6 +276,7 @@ plotNetworkGraphDisease <-
 
 
 simulateParty <- function(infected, pparty, pmask) {
+        set.seed(1) 
         ### Might be interesting to study how a change in %s impacts the results
         n.people <- length(infected)
         
