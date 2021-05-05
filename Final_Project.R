@@ -308,7 +308,7 @@ simulateParty <- function(infected, pparty, pmask) {
         #print(infected[partygoers])
         
         party_el <- as.matrix(expand.grid(sus_partygoers, inf_partygoers))
-        print(dim(party_el))
+        #print(dim(party_el))
         if (!is.null(nrow(party_el)) & nrow(party_el)>0) {
                 for (i in 1:nrow(party_el)) {
                         edge <- party_el[i, ]
