@@ -31,6 +31,13 @@ page_one <-
           max = 10,
           value = 5
         ),
+        sliderInput(
+          "random_seed",
+          "which scenario would you like to see?",
+          min = 1,
+          max = 500,
+          value = 50
+        ),
       ),
       # mainPanel
       mainPanel(

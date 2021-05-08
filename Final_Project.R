@@ -11,8 +11,9 @@ library(tergm)
 library(network)
 library(dplyr)
 library(ggplot2)
-# 
-# 
+
+# pct.vaccinated <- 0.323
+# pct.death <- 0.018
 # pct.starting.infected <- 0.05
 # n.workers <- 10
 # n.roommates <- 3
@@ -24,10 +25,10 @@ library(ggplot2)
 # partyDay <- 4
 # timeToPlot <- 10
 # is_party <-TRUE
-# death_rate <- 8.29%
+# death_rate <- 0.0829
 
-initiateNet <- function(n.roommates, n.workers, n.people) {
-        set.seed(1) 
+initiateNet <- function(n.roommates, n.workers, n.people, random_seed) {
+        set.seed(random_seed) 
         distribution <- matrix(0, nrow = n.people, ncol = n.people)
         
         ### If 0.5*n.people is the number of people who work, and each person who works
@@ -102,9 +103,10 @@ simulateDisease <-
                  is_party,
                  partyDay,
                  n.people,
-                 n.roommates) {
+                 n.roommates,
+                 random_seed) {
 
-                set.seed(1) 
+                set.seed(random_seed) 
                 infected <- sample(
                         x = c(1, 0),
                         # people can be infected (T) or susceptible (F)
@@ -119,7 +121,7 @@ simulateDisease <-
                 ### RUN A BIG LOOP TO SIMUALTE THE DISEASE
                 
                 # Set up a list that tracks infections over time.
-                # At time step 1, the infections are just the inital infections.
+                # At time step 1, the infections are just the initial infections.
                 infections <- vector(length = max.time, mode = "list")
                 infections[[1]] <- infected
                 
@@ -131,7 +133,6 @@ simulateDisease <-
                 el <- el %>% mutate(roommates = FALSE)
                 for (i in 1:(n.roommates-1)) {
                         el <- el %>% mutate(roommates = ifelse(to == from +i, TRUE, roommates))  
-                        
                 }
                 
                 # Next, run the loop
@@ -164,6 +165,7 @@ simulateDisease <-
                                 }
                         }
                         
+                        
                         ### For each edge in at_risk_edges_1, did the disease spread???
                         ### If the people are roommates, it spreads with probability 0.7
                         ### If the people are NOT roommates,spreads with probability 3/7*0.015
@@ -195,6 +197,8 @@ simulateDisease <-
                         }
                 }
                 
+                
+                
                 (results <- infections %>%
                                 lapply(FUN = as.data.frame) %>%
                                 lapply(FUN = set_names, value = "infected") %>%
@@ -202,7 +206,7 @@ simulateDisease <-
                                 mutate(id = rep(1:n.people, times = max.time),
                                        t = as.integer(t)) %>%
                                 tibble::as_tibble())
-                
+
                 # This dataset is the raw results of our simulation, but it's usually easier to
                 # look at a summary.  Let's look at the number of people infected over time
                 infections.by.time <- results %>%
@@ -238,7 +242,7 @@ simulateDisease <-
 
 
 plotNetworkGraphDisease <-
-        function(results, distribution_graph) {
+        function(results, distribution_graph, random_seed) {
                 distgraph2 <- distribution_graph %>% intergraph::asNetwork(.)
                 net.layout <- ggnetwork(distgraph2) %>%
                         mutate(id = rep(vertex.names))
@@ -250,7 +254,7 @@ plotNetworkGraphDisease <-
                         is_infected = infected > 0
                 )
 
-                set.seed(1) 
+                set.seed(random_seed) 
                 net.layout.by.time <-
                         split(results, f = results$t) %>%
                         lapply(FUN = right_join,
@@ -276,8 +280,8 @@ plotNetworkGraphDisease <-
 
 
 
-simulateParty <- function(infected, pparty, pmask) {
-        set.seed(518) 
+simulateParty <- function(infected, pparty, pmask,random_seed) {
+        set.seed(random_seed) 
         ### Might be interesting to study how a change in %s impacts the results
         n.people <- length(infected)
         
