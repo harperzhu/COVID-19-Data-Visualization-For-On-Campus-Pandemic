@@ -12,21 +12,6 @@ library(network)
 library(dplyr)
 library(ggplot2)
 
-# pct.vaccinated <- 0.323
-# pct.death <- 0.018
-# pct.starting.infected <- 0.05
-# n.workers <- 10
-# n.roommates <- 3
-# n.people <- 200
-# pct.starting.infected <- 0.5
-# max.time <- 100
-# pparty <- 0.8
-# pmask <- 0.1
-# partyDay <- 4
-# timeToPlot <- 10
-# is_party <-TRUE
-# death_rate <- 0.0829
-
 initiateNet <- function(n.roommates, n.workers, n.people, random_seed) {
         set.seed(random_seed) 
         distribution <- matrix(0, nrow = n.people, ncol = n.people)
@@ -242,7 +227,7 @@ simulateDisease <-
 
 
 plotNetworkGraphDisease <-
-        function(results, distribution_graph, random_seed) {
+        function(results, distribution_graph) {
                 distgraph2 <- distribution_graph %>% intergraph::asNetwork(.)
                 net.layout <- ggnetwork(distgraph2) %>%
                         mutate(id = rep(vertex.names))
@@ -253,8 +238,6 @@ plotNetworkGraphDisease <-
                         R = infected > 11,
                         is_infected = infected > 0
                 )
-
-                set.seed(random_seed) 
                 net.layout.by.time <-
                         split(results, f = results$t) %>%
                         lapply(FUN = right_join,
@@ -280,8 +263,8 @@ plotNetworkGraphDisease <-
 
 
 
-simulateParty <- function(infected, pparty, pmask,random_seed) {
-        set.seed(random_seed) 
+simulateParty <- function(infected, pparty, pmask) {
+        
         ### Might be interesting to study how a change in %s impacts the results
         n.people <- length(infected)
         

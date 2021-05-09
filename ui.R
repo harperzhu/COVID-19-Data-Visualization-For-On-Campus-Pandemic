@@ -72,6 +72,13 @@ page_two <- tabPanel(
         value = 100
       ),
       sliderInput(
+        "random_seed2",
+        "which scenario would you like to see?",
+        min = 1,
+        max = 500,
+        value = 50
+      ),
+      sliderInput(
         "pct.starting.infected",
         "The percentage of people initially infected",
         min = 0,

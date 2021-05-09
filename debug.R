@@ -9,18 +9,17 @@ input$max.time <- 100
 input$pparty <- 0.5
 input$pmask  <- 0.1
 input$partyDay <- 8
+input$random_seed <- 17
 
 
 
-
-
-distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people)
+distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people, input$random_seed)
 fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, 
                                FALSE,
-                               input$partyDay, input$n.people, input$n.roommates)
+                               input$partyDay, input$n.people, input$n.roommates, input$random_seed)
 fullResults_party <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, 
                                      TRUE,
-                                     input$partyDay, input$n.people, input$n.roommates)
+                                     input$partyDay, input$n.people, input$n.roommates, random_seed = input$random_seed)
 #plot(distribution_graph)
 infections.by.time = fullResults[[1]]
 infections.by.time.party = fullResults_party[[1]]

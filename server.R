@@ -23,21 +23,21 @@ server <- function(input, output) {
 
         model <- eventReactive(c(input$n.roommates,input$n.workers,input$n.people,
                 input$max.time,input$pparty,input$pct.starting.infected,
-                input$pmask, input$partyDay, input$random_seed)
+                input$pmask, input$partyDay, input$random_seed2)
         ,{
                 distribution_graph <- initiateNet(input$n.roommates, input$n.workers, input$n.people,input$random_seed)
                 fullResults <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, 
                                                FALSE,
-                                       input$partyDay, input$n.people, input$n.roommates,input$random_seed)
+                                       input$partyDay, input$n.people, input$n.roommates,input$random_seed2)
                 fullResults_party <- simulateDisease(distribution_graph, input$pct.starting.infected, input$max.time, input$pparty, input$pmask, 
                                                TRUE,
-                                               input$partyDay, input$n.people, input$n.roommates,input$random_seed)
+                                               input$partyDay, input$n.people, input$n.roommates,input$random_seed2)
                 #plot(distribution_graph)
                 infections.by.time = fullResults[[1]]
                 infections.by.time.party = fullResults_party[[1]]
                 results = fullResults[[2]]
                 results_party = fullResults_party[[2]]
-                net.layout.by.time <- plotNetworkGraphDisease(results, distribution_graph,random_seed)
+                net.layout.by.time <- plotNetworkGraphDisease(results, distribution_graph)
                 
                 p1 <- ggplot(data = infections.by.time, aes(x = t, y = S, col="S")) +
                         ylab("number of people") +
